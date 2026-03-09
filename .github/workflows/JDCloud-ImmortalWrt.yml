@@ -166,9 +166,10 @@ jobs:
           ### 📒 固件信息
           - 这是开启全功能NSS的6.12内核固件，默认主题为Aurora；该固件在ImmortalWrt的基础上，添加了额外的软件包cpufreq、ddns、ttyd、upnp、wol、samba4、vlmcsd、aria2、autoreboot、uhttpd、wifischedule、frps、frpc、diskman、hd-idle、banip、acme、arpbind、usb-printer、passwall、openlist、oaf、sqm、wireguard、watchcat、wechatpush、3cat、smartdns（**Taiyi**额外增加了dockerman、gecoosac、lucky），并添加了若干工具，具体详见JDCloud.config(NoWiFi.config)和General.config。
           - 💻 这是 ${{ env.FIRMWARE_TAG }} 平台使用的 OpenWrt 固件
+          - 🚀 独家定制: 集成双线多拨叠加、全自动注入 Athena LED 信仰灯、AList网盘与Docker环境！
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
-          - 🌐 默认地址: **192.168.2.1**
+          - 🌐 默认地址: **172.27.0.1**
           - 🔑 默认密码: none
           ### 🧊 固件版本
           - 固件内核版本：**${{ env.VERSION_KERNEL }}**
