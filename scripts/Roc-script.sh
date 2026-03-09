@@ -63,8 +63,7 @@ git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lu
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush package/luci-app-wechatpush
 git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
-git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
-chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led package/luci-app-athena-led/root/usr/sbin/athena-led
+
 
 ### PassWall & OpenClash ###
 
@@ -84,3 +83,34 @@ echo "baidu.com"  > package/luci-app-passwall/luci-app-passwall/root/usr/share/p
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
+
+
+# ==========================================
+# 终极魔法：注入预编译的 Athena LED APK 并在首次开机自动安装
+# ==========================================
+
+# 1. 物理超度：以防万一，删掉系统自带的 LED 源码目录
+rm -rf package/luci-app-athena-led
+
+# 2. 建立 OpenWrt 的自定义文件覆盖目录 (固件打包时会自动塞进系统)
+mkdir -p files/root/
+mkdir -p files/etc/uci-defaults/
+
+# 3. 把你的专属 APK 下载到固件的 /root 目录下
+wget -O files/root/athena-led.apk https://github.com/unraveloop/JDC-AX6600-Athena-LED-Controller/releases/download/v2.2.3/luci-app-athena-led-2.2.3-r1.apk
+
+# 4. 写入 uci-defaults 首次开机自启脚本
+# （这个脚本会在路由器第一次开机时默默运行，装好插件后自动销毁，不留痕迹）
+cat << "EOF" > files/etc/uci-defaults/99-install-led
+#!/bin/sh
+# 允许安装本地未签名的 apk 包
+apk add --allow-untrusted /root/athena-led.apk
+# 安装完清理安装包和本脚本，释放空间
+rm -f /root/athena-led.apk
+rm -f /etc/uci-defaults/99-install-led
+exit 0
+EOF
+
+# 5. 给自启脚本赋予执行权限
+chmod +x files/etc/uci-defaults/99-install-led
